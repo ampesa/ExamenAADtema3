@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class AddLecturer extends AppCompatActivity {
 
     // Creamos los EditText para los datos del profesor
@@ -40,18 +42,34 @@ public class AddLecturer extends AppCompatActivity {
                 // Guardamos los datos en la base de datos
                 // Abrimos la base de datos en modo escritura
                 dbAdapter.open();
-                // Insertamos el profesor
-                dbAdapter.insertLecturer(mLecturerName.getText().toString(), mLecturerAge.getText().toString(),
+
+                /*ArrayList<String> prueba = dbAdapter.insertLecturer(mLecturerName.getText().toString(), mLecturerAge.getText().toString(),
                         mLecturerGrade.getText().toString(), mLecturerCourse.getText().toString(),
                         mLecturerOfficeNumber.getText().toString());
-                // Limpiamos los edit Text
-                mLecturerName.setText("");
-                mLecturerAge.setText("");
-                mLecturerGrade.setText("");
-                mLecturerCourse.setText("");
-                mLecturerOfficeNumber.setText("");
-                // Notificamos que se ha guardado el profesor
-                Toast.makeText(getApplicationContext(),"Profesor guardado", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getApplicationContext(),
+                        "El profesor: "+prueba.toString(),
+                        Toast.LENGTH_LONG).show();*/
+                // Insertamos el profesor
+                // Si el método devuelve true mostramos el Toast "se ha añadido el profesor" + mLecturerName.getText().toString()
+                if (dbAdapter.insertLecturer(mLecturerName.getText().toString(), mLecturerAge.getText().toString(),
+                        mLecturerGrade.getText().toString(), mLecturerCourse.getText().toString(),
+                        mLecturerOfficeNumber.getText().toString())){
+                    // Notificamos que se ha guardado el profesor
+                    Toast.makeText(getApplicationContext(),"Profesor guardado", Toast.LENGTH_LONG).show();
+                    // Limpiamos los edit Text
+                    mLecturerName.setText("");
+                    mLecturerAge.setText("");
+                    mLecturerGrade.setText("");
+                    mLecturerCourse.setText("");
+                    mLecturerOfficeNumber.setText("");
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "El profesor: "+mLecturerName.getText().toString()+" ya existe. NO SE HA GUARDADO",
+                            Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
     }

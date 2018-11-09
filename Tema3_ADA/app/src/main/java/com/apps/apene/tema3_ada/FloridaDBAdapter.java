@@ -95,23 +95,49 @@ public class FloridaDBAdapter {
         db.insert(TABLE_STUDENTS,null,newValues);
     }
 
-    public void insertLecturer(String name, String age, String grade, String course, String on){
-        //Creamos un nuevo registro de valores a insertar
-        ContentValues newValues = new ContentValues();
-        //Asignamos los valores de cada campo
-        newValues.put(KEY_NAME,name);
-        newValues.put(KEY_AGE, age);
-        newValues.put(KEY_GRADE, grade);
-        newValues.put(KEY_COURSE, course);
-        newValues.put(KEY_OFFICE_NUMBER, on);
-        db.insert(TABLE_LECTURERS,null,newValues);
+    public boolean insertLecturer(String name, String age, String grade, String course, String on){
+        /*ArrayList<String> lecturers = new ArrayList<String>();
+        //Recuperamos en un cursor la consulta realizada
+        Cursor cursor = db.query(TABLE_LECTURERS,null,"Nombre = '" + name + "'",null,
+                null,null,KEY_COURSE);
+        //Recorremos el cursor
+        if (cursor != null && cursor.moveToFirst()){
+            do{
+                lecturers.add(cursor.getString(1)+" "+cursor.getString(2) + " " +
+                        cursor.getString(3) + " " + cursor.getString(4) + " " +
+                        cursor.getString(5));
+            }while (cursor.moveToNext());
+        }
+        return lecturers;*/
+
+
+        // consultamos la tabla profesores buscando el nombre introducido
+        Cursor cursor = db.query(TABLE_LECTURERS,null,"Nombre = '" + name + "'",null,
+                null,null,null);
+        // Si el cursor no tiene filas el profesro no existe todavía en la base de datos
+        if (cursor.getCount() == 0) {
+            // Como el profesor no existe, lo creamos y devolvemos true
+            //Creamos un nuevo registro de valores a insertar
+            ContentValues newValues = new ContentValues();
+            //Asignamos los valores de cada campo
+            newValues.put(KEY_NAME,name);
+            newValues.put(KEY_AGE, age);
+            newValues.put(KEY_GRADE, grade);
+            newValues.put(KEY_COURSE, course);
+            newValues.put(KEY_OFFICE_NUMBER, on);
+            db.insert(TABLE_LECTURERS,null,newValues);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public ArrayList<String> getAllStudents(){
         ArrayList<String> students = new ArrayList<String>();
+
         //Recuperamos en un cursor la consulta realizada
-        Cursor cursor = db.query(TABLE_STUDENTS,null,null,null,
-                null,null,null);
+        Cursor cursor = db.query(TABLE_STUDENTS,null, "Ciclo = 'DAM' OR Ciclo = 'DAW'",null,
+                null, null,KEY_GRADE);
         //Recorremos el cursor
         if (cursor != null && cursor.moveToFirst()){
             do{
@@ -138,7 +164,7 @@ public class FloridaDBAdapter {
         }
         return students;
     }
-
+    // Probamos la consulta sobre el nombre del profesor
     public ArrayList<String> getStudentsByCourse(){
         ArrayList<String> students = new ArrayList<String>();
         //Recuperamos en un cursor la consulta realizada
